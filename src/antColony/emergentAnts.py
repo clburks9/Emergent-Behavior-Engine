@@ -26,6 +26,7 @@ import sys, pygame
 import inspect
 import numpy as np; 
 from AntSprites import *
+import matplotlib.pyplot as plt
 
 
 def fillAntArray(primeAnt,numPer = 40):
@@ -43,7 +44,7 @@ def fillAntArray(primeAnt,numPer = 40):
 
 
 
-def checkCollisions(allAnts):
+def checkCollisions(allAnts,primeAnt):
 
 	#update counts
 	for ant1 in allAnts:
@@ -55,18 +56,45 @@ def checkCollisions(allAnts):
 	#drop oldest encounters
 	totalEncounters = 50; 
 	for ant1 in allAnts:
-		if(len(ant1.encounters) > totalEncounters):
-			ant1.encounters = ant1.encounters[-totalEncounters]; 
+		if(len(ant1.encounters) > totalEncounters): 
+			ant1.encounters = ant1.encounters[-totalEncounters:-1];
+			
 
 	#if one type makes up a small portion, switch to that type
-	permissiableFraction = 1/6; 
+	permissiableFraction = .19; 
 	for ant1 in allAnts:
 		suma = sum(ant1.counts.values()); 
 		for antType in ant1.counts.keys():
-			if(ant1.counts[antType]/suma < permissiableFraction):
+			if(ant1.counts[antType]/suma < permissiableFraction and antType is not "AntSprite"):
 				#change
-				a = 1;
-				###################################################################################
+				#print("{} to {}".format(ant1.__class__.__name__,antType));
+				newAntType = eval(antType); 
+				newAnt = newAntType(primeAnt); 
+				newAnt.rect.move(ant1.rect[0],ant1.rect[1]); 
+				newAnt.setNewGoal(); 
+				allAnts.append(newAnt);
+				allAnts.remove(ant1); 
+				break;  
+	
+def theCulling(allAnts,primeAnt):
+	toRem = []; 
+	perToRem = .0001; 
+	for i in range(0,len(allAnts)):
+		if(np.random.random()<perToRem):
+			toRem.append(allAnts[i]); 
+
+	for i in range(0,len(toRem)):
+		allAnts.remove(toRem[i]); 
+		allAnts.append(AntSprite(primeAnt)); 
+
+def roleCall(allAnts,allCounts):
+	counts = {"BuilderAnt":0,"SoliderAnt":0,"GathererAnt":0,"NurseAnt":0,"AntSprite":0};
+	for ant in allAnts:
+		counts[ant.__class__.__name__] += 1; 
+
+	for count in counts.keys():
+		allCounts[count].append(counts[count]); 
+	 
 
 if __name__ == '__main__':
 	
@@ -75,25 +103,34 @@ if __name__ == '__main__':
 	size = width, height = 900, 700
 	white = 255, 255, 255
 	fps = 30; 
+	numAnts = 50; 
+
+	allCounts = {"BuilderAnt":[],"SoliderAnt":[],"GathererAnt":[],"NurseAnt":[],"AntSprite":[]};
 
 	screen = pygame.display.set_mode(size)
 
 	primeAnt = pygame.image.load("ant.png"); 
-	allAnts = fillAntArray(primeAnt,50); 
+	allAnts = fillAntArray(primeAnt,numAnts); 
 
 	print("Ants loaded");
 	clock = pygame.time.Clock();
 
 	#screen.fill(white)
+	quitFlag=False; 
 	while 1: 
 		for event in pygame.event.get():
-		    if event.type == pygame.QUIT: sys.exit()
+		    if(event.type == pygame.QUIT):
+		    	pygame.display.quit();
+		    	quitFlag = True; 
+		if(quitFlag):
+			break;  
 
 		for ant in allAnts:
 			ant.update(width,height)
-
-		checkCollisions(allAnts); 
-
+ 
+ 		roleCall(allAnts,allCounts); 
+		checkCollisions(allAnts,primeAnt); 
+		theCulling(allAnts,primeAnt); 
 		screen.fill(white)
 		for ant in allAnts:
 			screen.blit(ant.img, ant.rect)
@@ -103,7 +140,10 @@ if __name__ == '__main__':
 		clock.tick(fps);
 		pygame.display.flip()
 
-
-
-
+	leg = []; 
+	for key in allCounts.keys():
+		plt.plot(allCounts[key]); 
+		leg.append(key); 
+	plt.legend(leg); 
+	plt.show();
 

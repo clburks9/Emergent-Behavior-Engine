@@ -12,9 +12,14 @@ class AntSprite:
 		self.rect= self.img.get_bounding_rect()
 		self.rect = self.rect.move([np.random.randint(100,800),np.random.randint(100,600)]);
 
+		self.allGoals = [];
+		for i in range(0,30):
+			self.allGoals.append([np.random.randint(100,800),np.random.randint(100,600)]); 
+		self.setNewGoal(); 
 
 		self.makeID(); 
-		self.counts = {"BuilderAnt":100,"SoliderAnt":100,"GathererAnt":100,"NurseAnt":100}; 
+		self.counts = {"BuilderAnt":100,"SoliderAnt":100,"GathererAnt":100,"NurseAnt":100,"AntSprite":100};
+
 		#keep list of encountered ants
 		self.encounters = [];
 
@@ -58,7 +63,7 @@ class AntSprite:
 
 		#have counts fade with time to prioritize recent weightings
 		for antType in self.counts.keys():
-			self.counts[antType] -= 0.01; 
+			self.counts[antType] -= 0.0001; 
 
 		#make sure counts don't go below zero
 		for antType in self.counts.keys():
