@@ -75,7 +75,8 @@ class BuilderAnt(AntSprite):
 
 	def __init__(self,surf):
 		AntSprite.__init__(self,surf); 
-		self.allGoals = [[100,100],[500,500],[800,100]];
+		#self.allGoals = [[100,100],[500,500],[800,100]];
+		self.allGoals = [[50,50],[450,350],[850,50]]; 
 		self.color = [0,0,200];
 		self.img.convert_alpha(); 
 		self.reColor();  
@@ -84,7 +85,8 @@ class BuilderAnt(AntSprite):
 class SoliderAnt(AntSprite):
 	def __init__(self,surf):
 		AntSprite.__init__(self,surf); 
-		self.allGoals = [[100,500],[500,100],[800,500]];
+		#self.allGoals = [[100,500],[500,100],[800,500]];
+		self.allGoals = [[50,50],[450,350],[50,650]]
 		self.color = [200,0,0];
 		self.img.convert_alpha(); 
 		self.reColor();  
@@ -93,7 +95,8 @@ class SoliderAnt(AntSprite):
 class GathererAnt(AntSprite):
 	def __init__(self,surf):
 		AntSprite.__init__(self,surf);  
-		self.allGoals = [[100,100],[500,500],[500,100],[100,500]];
+		#self.allGoals = [[100,100],[500,500],[500,100],[100,500]];
+		self.allGoals = [[50,650],[450,350],[850,650]]; 
 		self.color = [0,200,0];
 		self.img.convert_alpha(); 
 		self.reColor();  
@@ -102,7 +105,8 @@ class GathererAnt(AntSprite):
 class NurseAnt(AntSprite):
 	def __init__(self,surf):
 		AntSprite.__init__(self,surf);  
-		self.allGoals = [[300,300],[600,600],[600,300],[300,600]];
+		#self.allGoals = [[300,300],[600,600],[600,300],[300,600]];
+		self.allGoals = [[850,650],[450,350],[850,50]]; 
 		self.color = [150,0,150];
 		self.img.convert_alpha(); 
 		self.reColor();  

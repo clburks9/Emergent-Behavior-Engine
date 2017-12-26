@@ -54,10 +54,10 @@ def checkCollisions(allAnts,primeAnt):
 				ant1.counts[ant2.__class__.__name__] += 1; 
 
 	#drop oldest encounters
-	totalEncounters = 50; 
-	for ant1 in allAnts:
-		if(len(ant1.encounters) > totalEncounters): 
-			ant1.encounters = ant1.encounters[-totalEncounters:-1];
+	# totalEncounters = 50; 
+	# for ant1 in allAnts:
+	# 	if(len(ant1.encounters) > totalEncounters): 
+	# 		ant1.encounters = ant1.encounters[-totalEncounters:-1];
 			
 
 	#if one type makes up a small portion, switch to that type
@@ -94,7 +94,7 @@ def roleCall(allAnts,allCounts):
 
 	for count in counts.keys():
 		allCounts[count].append(counts[count]); 
-	 
+	
 
 if __name__ == '__main__':
 	
@@ -103,7 +103,7 @@ if __name__ == '__main__':
 	size = width, height = 900, 700
 	white = 255, 255, 255
 	fps = 30; 
-	numAnts = 50; 
+	numAnts = 75; 
 
 	allCounts = {"BuilderAnt":[],"SoliderAnt":[],"GathererAnt":[],"NurseAnt":[],"AntSprite":[]};
 
@@ -114,6 +114,8 @@ if __name__ == '__main__':
 
 	print("Ants loaded");
 	clock = pygame.time.Clock();
+
+	myfont = pygame.font.SysFont("monospace",15); 
 
 	#screen.fill(white)
 	quitFlag=False; 
@@ -129,12 +131,20 @@ if __name__ == '__main__':
 			ant.update(width,height)
  
  		roleCall(allAnts,allCounts); 
+ 		#set labels
+ 		labels = []; 
+ 		for key in allCounts.keys():
+ 			labels.append(myfont.render(key+": "+str(allCounts[key][-1]),1,(0,0,0))); 
+
+
+
 		checkCollisions(allAnts,primeAnt); 
 		theCulling(allAnts,primeAnt); 
 		screen.fill(white)
 		for ant in allAnts:
 			screen.blit(ant.img, ant.rect)
-			
+		for i in range(0,len(labels)):
+ 			screen.blit(labels[i],(50+i*175,50)); 
 
 		
 		clock.tick(fps);
